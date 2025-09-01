@@ -1,0 +1,21 @@
+# Ignore the entire Src folder
+/Src/
+/Input_Video/
+
+# Ignore pretrained model files
+*.weights
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Environment or secret files (if any)
+/.env
+*.env
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# Logs
+*.log
