@@ -1,4 +1,7 @@
+# Models\License_Plate_Recognition\lpr.py
+
 import cv2
+import os
 import cvzone
 import numpy as np
 import easyocr
@@ -17,6 +20,9 @@ def detect(frame):
     """
     Detects license plates in the frame and draws OCR results.
     """
+    # Initialize the set here, once per frame
+    seen_plates = set()
+    
     results = lpr_model.predict(frame, conf=0.5, iou=0.3, verbose=False)
 
     for result in results:
@@ -32,21 +38,20 @@ def detect(frame):
             # OCR on the extracted plate
             ocr_result = reader.readtext(plate_roi)
             
-            seen_plates = set()
+            # The set should NOT be initialized here
+            # seen_plates = set()
 
             # Display top result if available
             if ocr_result:
                 text = ocr_result[0][1]
-                # cvzone.putTextRect(frame, f"Plate: {text}", (x1, y2 + 30), scale=1,
-                #                    thickness=1, colorR=(255, 0, 0), colorT=(0, 0, 0))
                 cvzone.putTextRect(frame, f"Plate", (x1, y2 + 30), scale=1,
                                    thickness=1, colorR=(255, 0, 0), colorT=(0, 0, 0))
                 
                 if text not in seen_plates:
                     seen_plates.add(text)
+                    # Ensure the Output/LPR directory exists
+                    if not os.path.exists("./Output/LPR"):
+                        os.makedirs("./Output/LPR")
                     with open("./Output/LPR/detected_plates.csv", "a") as f:
                         f.write(f"{text}, {datetime.now()}\n")
-            
-            
-
     return frame
